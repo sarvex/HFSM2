@@ -5,7 +5,7 @@ import re
 def merge(folder, path, included, commentRE, output):
 	pathTokens = path.split("/")
 
-	current = folder + "/" + pathTokens[-1]
+	current = f"{folder}/{pathTokens[-1]}"
 	with open(current, 'r', encoding='utf-8') as input:
 		lastLineEmpty = False
 
@@ -27,7 +27,7 @@ def merge(folder, path, included, commentRE, output):
 						merge(folder, next, included, commentRE, output)
 					else:
 						name = nextTokens.pop()
-						merge(folder + "/" + "/".join(nextTokens), name, included, commentRE, output)
+						merge(f"{folder}/" + "/".join(nextTokens), name, included, commentRE, output)
 
 			else:
 				if line.startswith('\ufeff'):
@@ -48,12 +48,10 @@ def merge(folder, path, included, commentRE, output):
 
 #-------------------------------------------------------------------------------
 
-output = open("../include/hfsm2/machine.hpp", 'w', encoding='utf-8-sig')
-included = []
-commentRE = re.compile("(?:\s*\/\/ COMMON)|(?:\s*\/\/ SPECIFIC)|(?:\s*\/\/\/\/)|(?:\s*\/\/--)|(?:\s*\/\/ -)")
+with open("../include/hfsm2/machine.hpp", 'w', encoding='utf-8-sig') as output:
+	included = []
+	commentRE = re.compile("(?:\s*\/\/ COMMON)|(?:\s*\/\/ SPECIFIC)|(?:\s*\/\/\/\/)|(?:\s*\/\/--)|(?:\s*\/\/ -)")
 
-merge("../development/hfsm2", "machine_dev.hpp", included, commentRE, output)
-
-output.close()
+	merge("../development/hfsm2", "machine_dev.hpp", included, commentRE, output)
 
 #===============================================================================
